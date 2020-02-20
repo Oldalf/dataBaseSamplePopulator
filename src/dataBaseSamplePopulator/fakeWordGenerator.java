@@ -13,7 +13,7 @@ public class fakeWordGenerator {
 	
 	protected Random rand;
 	private LinkedList<String> words = new LinkedList<String>();
-	private static final String path = "C://javalib/words_alpha.txt";
+	private static final String path = "src/resources/words_alpha.txt";
 	
 	public fakeWordGenerator(int seed) {
 		readWords();

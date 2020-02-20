@@ -87,11 +87,11 @@ public class dataPopulator {
 				// Add query as part of a batch.
 				stmt.addBatch(actualInsert);
 				
-				if(i % 10000 == 0) {
+				if(i % 1000 == 0) {
 					long timeTaken = (System.currentTimeMillis() - stopwatch)/1000;
 					stopwatch = System.currentTimeMillis();
 					long totalTimeTaken = (System.currentTimeMillis() - start)/1000;
-					System.out.println(i+" rows completed in " + totalTimeTaken + " . The last 10k took: "+timeTaken+" seconds.");
+					System.out.println(i+" rows completed in " + totalTimeTaken + " . The last 1000 took: "+timeTaken+" seconds.");
 				}
 			}
 			

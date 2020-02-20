@@ -9,7 +9,7 @@ public class main {
 		dataBaseReader dbReader = new dataBaseReader("examensarbete_test");
 		LinkedList<dataBaseTableCharacteristic> tables = dbReader.readDataBase("");
 		
-		dataPopulator populator = new dataPopulator("examensarbete_test", "", tables, 30000);
+		dataPopulator populator = new dataPopulator("examensarbete_test", "", tables, 1);
 		populator.populate();
 	}
 
