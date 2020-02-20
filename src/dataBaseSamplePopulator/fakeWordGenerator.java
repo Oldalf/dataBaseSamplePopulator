@@ -1,7 +1,7 @@
 package dataBaseSamplePopulator;
 
 import java.io.FileInputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -12,7 +12,7 @@ public class fakeWordGenerator {
 	protected char[] vowels = { 'a', 'e', 'i', 'o', 'u', 'y' };
 	
 	protected Random rand;
-	private LinkedList<String> words = new LinkedList<String>();
+	private ArrayList<String> words = new ArrayList<String>();
 	private static final String path = "src/resources/words_alpha.txt";
 	
 	public fakeWordGenerator(int seed) {
