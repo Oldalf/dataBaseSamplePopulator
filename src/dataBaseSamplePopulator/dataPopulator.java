@@ -2,13 +2,13 @@ package dataBaseSamplePopulator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.UUID;
 
 public class dataPopulator {
 	private String dataBase;
@@ -76,7 +76,7 @@ public class dataPopulator {
 						continue;
 					}
 
-					actualInsert += getData(activeColumn) + ",";
+					actualInsert += getData(activeColumn, rows) + ",";
 
 				}
 				// remove the last ","
@@ -107,7 +107,7 @@ public class dataPopulator {
 
 	}
 
-	private String getData(dataBaseColumnCharacteristic activeColumn) {
+	private String getData(dataBaseColumnCharacteristic activeColumn, int rows) {
 		String columnData = "";
 
 		switch (activeColumn.getColumnType()) {
@@ -116,13 +116,21 @@ public class dataPopulator {
 			columnData = "\"" + getChar(activeColumn.getLength()) + "\"";
 			break;
 		case Varchar:
-			columnData = "\"" + getText(activeColumn.getLength()) + "\"";
+			if(activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.guid){
+				columnData = "\"" + getGuid() + "\"";
+			} else {
+				columnData = "\"" + getText(activeColumn.getLength()) + "\"";				
+			}
 			break;
 		case Text:
 			columnData = "\"" + getText(activeColumn.getLength()) + "\"";
 			break;
 		case Int:
-			columnData = Integer.toString(getInt(activeColumn.getLength()));
+			if(activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.relation){
+				columnData = Integer.toString(getIntRelation(rows));	
+			} else {
+				columnData = Integer.toString(getInt(activeColumn.getLength()));				
+			}
 			break;
 		case Tinyint:
 			columnData = String.valueOf(getBoolean(activeColumn.getLength()));
@@ -186,6 +194,10 @@ public class dataPopulator {
 		limitedInt = Integer.parseInt(intLimiter);
 		return rand.nextInt(limitedInt);
 	}
+	
+	private int getIntRelation(int rows) {
+		return rand.nextInt(rows);	
+	}
 
 	private String getText(int lenght) {
 		String text = "";
@@ -199,6 +211,10 @@ public class dataPopulator {
 			text = text.substring(0, lenght);
 		}
 		return text;
+	}
+	
+	private String getGuid() {
+		return UUID.randomUUID().toString();
 	}
 
 	private boolean getBoolean(int length) {

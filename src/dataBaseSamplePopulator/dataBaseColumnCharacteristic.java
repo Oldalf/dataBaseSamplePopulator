@@ -6,7 +6,7 @@ public class dataBaseColumnCharacteristic {
 	}
 
 	enum Extra {
-		auto_increment, blob, None, on_update_current_timestamp
+		auto_increment, blob, None, on_update_current_timestamp, relation, guid
 	}
 
 	// Normal fördelnings värden för att få en fördelning. ??
