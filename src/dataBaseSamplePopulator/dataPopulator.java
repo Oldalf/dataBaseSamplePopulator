@@ -11,6 +11,9 @@ import java.util.Random;
 import java.util.UUID;
 
 public class dataPopulator {
+	
+	enum intType { normalInt, bigInt, mediumInt }
+	
 	private String dataBase;
 	private String password;
 	private LinkedList<dataBaseTableCharacteristic> allTables;
@@ -129,14 +132,14 @@ public class dataPopulator {
 			if(activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.relation){
 				columnData = Integer.toString(getIntRelation(rows));	
 			} else {
-				columnData = Integer.toString(getInt(activeColumn.getLength()));				
+				columnData = Long.toString(getLong(intType.normalInt));
 			}
 			break;
 		case Tinyint:
 			columnData = String.valueOf(getBoolean(activeColumn.getLength()));
 			break;
 		case Bigint:
-			columnData = Integer.toString(getInt(activeColumn.getLength()));
+			columnData = Long.toString(getLong(intType.bigInt));
 			break;
 		case Boolean:
 			columnData = String.valueOf(getBoolean(activeColumn.getLength()));
@@ -185,18 +188,23 @@ public class dataPopulator {
 		return retVal;
 	}
 
-	private int getInt(int length) {
-		int limitedInt = 0;
-		String intLimiter = "";
-		for (int i = 0; i < length; i++) {
-			intLimiter += "9";
+	private long getLong(intType type) {
+		long leftLimit = 0L;
+		long rightLimit;
+		if(type == intType.normalInt) {
+			rightLimit = 2147483647L; 
+		} else if(type == intType.bigInt) {
+			rightLimit = 9223372036854775807L;
+		} else if(type == intType.mediumInt) {
+			rightLimit = 8388607L ;
+		} else {
+			rightLimit = 2147483647;
 		}
-		limitedInt = Integer.parseInt(intLimiter);
-		return rand.nextInt(limitedInt);
+		return leftLimit + (long) (Math.random() * (rightLimit-leftLimit));
 	}
 	
 	private int getIntRelation(int rows) {
-		return rand.nextInt(rows);	
+		return rand.nextInt(rows)+1; //No row will have id 0.	
 	}
 
 	private String getText(int lenght) {

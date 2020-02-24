@@ -6,10 +6,10 @@ public class main {
 
 	public static void main(String[] args) {
 		
-		dataBaseReader dbReader = new dataBaseReader("examensarbete_test");
+		dataBaseReader dbReader = new dataBaseReader("bachelorproject_db");
 		LinkedList<dataBaseTableCharacteristic> tables = dbReader.readDataBase("");
 
-		dataPopulator populator = new dataPopulator("examensarbete_test", "", tables, 10000);
+		dataPopulator populator = new dataPopulator("bachelorproject_db", "", tables, 10);
 		populator.populate();
 	}
 
