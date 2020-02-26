@@ -38,6 +38,8 @@ public class dataPopulator {
 		for (int i = 0; i < allTables.size(); i++) {
 			populateTable(allTables.get(i));
 		}
+		System.out.println("********************");
+		System.out.println("Done, all tables populated.");
 	}
 
 	private void populateTable(dataBaseTableCharacteristic table) {
@@ -69,6 +71,7 @@ public class dataPopulator {
 			Long start = System.currentTimeMillis();
 			Long stopwatch = start;
 			int actualRowAmount = rowAmount;
+			System.out.println(table);
 			if (table.hasRelation) {
 				actualRowAmount = actualRowAmount * 4;
 			}

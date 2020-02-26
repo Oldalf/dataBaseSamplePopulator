@@ -5,11 +5,12 @@ import java.util.LinkedList;
 public class dataBaseTableCharacteristic {
 	private LinkedList<dataBaseColumnCharacteristic> columns = new LinkedList<dataBaseColumnCharacteristic>();
 	private String tableName;
-	public Boolean hasRelation;
+	public boolean hasRelation;
 
 	public dataBaseTableCharacteristic(LinkedList<dataBaseColumnCharacteristic> columns, String tableName) {
 		this.columns = columns;
 		this.tableName = tableName;
+		this.hasRelation = false;
 	}
 
 	public dataBaseTableCharacteristic(String tableName) {
@@ -36,13 +37,14 @@ public class dataBaseTableCharacteristic {
 		this.tableName = tableName;
 	}
 
-	@Override
-	public String toString() {
-		return "dataBaseTableCharacteristic [columns=" + columns + ", tableName=" + tableName + "]";
-	}
-
 	public int getColumnAmount() {
 		return columns.size();
+	}
+
+	@Override
+	public String toString() {
+		return "dataBaseTableCharacteristic [columns=" + columns + ", tableName=" + tableName + ", hasRelation="
+				+ hasRelation + "]";
 	}
 
 	public dataBaseColumnCharacteristic getColumn(int i) {

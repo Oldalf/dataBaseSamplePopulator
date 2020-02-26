@@ -9,7 +9,7 @@ public class main {
 		dataBaseReader dbReader = new dataBaseReader("bachelorproject_db");
 		LinkedList<dataBaseTableCharacteristic> tables = dbReader.readDataBase("");
 
-		dataPopulator populator = new dataPopulator("bachelorproject_db", "", tables, 10);
+		dataPopulator populator = new dataPopulator("bachelorproject_db", "", tables, 2500);
 		populator.populate();
 	}
 

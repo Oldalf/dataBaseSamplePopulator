@@ -63,14 +63,17 @@ public class dataBaseReader {
 				setDataBaseColumnTypeAndLength(rs.getString(2), col);
 				if (rs.getString(9).length() > 0) {
 					// if there's a comment, try and get extra from it, if it returns 0 (fail)
-					// then perform a normal extra action  
-					if (setDataBaseExtraFromComments(rs.getString(9), col) == 0) {
-						setDataBaseExtra(rs.getString(7), col);
+					// then perform a normal extra action
+					if (setDataBaseExtraFromComments(rs.getString(9), col) == 1) {
+						System.out.println(col.getName() + " has an extra comment: " + col.getExtra());
 						// If the column is a relation
-						if(col.getExtra() == dataBaseColumnCharacteristic.Extra.relation) {
+						if (col.getExtra() == dataBaseColumnCharacteristic.Extra.relation) {
 							// Modify has relation to true.
+							System.out.println("hit");
 							retVal.hasRelation = true;
 						}
+					} else {
+						setDataBaseExtra(rs.getString(7), col);
 					}
 				} else {
 					setDataBaseExtra(rs.getString(7), col);
