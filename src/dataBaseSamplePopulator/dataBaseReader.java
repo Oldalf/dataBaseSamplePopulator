@@ -66,6 +66,11 @@ public class dataBaseReader {
 					// then perform a normal extra action  
 					if (setDataBaseExtraFromComments(rs.getString(9), col) == 0) {
 						setDataBaseExtra(rs.getString(7), col);
+						// If the column is a relation
+						if(col.getExtra() == dataBaseColumnCharacteristic.Extra.relation) {
+							// Modify has relation to true.
+							retVal.hasRelation = true;
+						}
 					}
 				} else {
 					setDataBaseExtra(rs.getString(7), col);

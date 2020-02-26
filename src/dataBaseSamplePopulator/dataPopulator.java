@@ -11,14 +11,16 @@ import java.util.Random;
 import java.util.UUID;
 
 public class dataPopulator {
-	
-	enum intType { normalInt, bigInt, mediumInt }
-	
+
+	enum intType {
+		normalInt, bigInt, mediumInt
+	}
+
 	private String dataBase;
 	private String password;
 	private LinkedList<dataBaseTableCharacteristic> allTables;
 	private fakeWordGenerator wordGen;
-	public static final int seed = 556;
+	public static final int seed = 555;
 	private Random rand = new Random(seed);
 
 	private int rowAmount;
@@ -33,14 +35,12 @@ public class dataPopulator {
 	}
 
 	public void populate() {
-
 		for (int i = 0; i < allTables.size(); i++) {
-			populateTable(allTables.get(i), rowAmount);
+			populateTable(allTables.get(i));
 		}
-
 	}
 
-	private void populateTable(dataBaseTableCharacteristic table, int rows) {
+	private void populateTable(dataBaseTableCharacteristic table) {
 		Connection con;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -49,7 +49,7 @@ public class dataPopulator {
 			Statement stmt = con.createStatement();
 
 			System.out.println("table: " + table.getTableName());
-			
+
 			// Prepare the default things every insert will use.
 			String insert = "INSERT INTO " + table.getTableName() + "(";
 
@@ -68,9 +68,12 @@ public class dataPopulator {
 
 			Long start = System.currentTimeMillis();
 			Long stopwatch = start;
-			for (int i = 0; i < rows; i++) {
-				
-				
+			int actualRowAmount = rowAmount;
+			if (table.hasRelation) {
+				actualRowAmount = actualRowAmount * 4;
+			}
+			for (int i = 0; i < actualRowAmount; i++) {
+
 				String actualInsert = insert;
 				for (int j = 0; j < table.getColumnAmount(); j++) {
 					dataBaseColumnCharacteristic activeColumn = table.getColumn(j);
@@ -79,7 +82,7 @@ public class dataPopulator {
 						continue;
 					}
 
-					actualInsert += getData(activeColumn, rows) + ",";
+					actualInsert += getData(activeColumn) + ",";
 
 				}
 				// remove the last ","
@@ -89,20 +92,22 @@ public class dataPopulator {
 
 				// Add query as part of a batch.
 				stmt.addBatch(actualInsert);
-				
-				if(i % 1000 == 0) {
-					long timeTaken = (System.currentTimeMillis() - stopwatch)/1000;
+
+				if (i % 1000 == 0) {
+					long timeTaken = (System.currentTimeMillis() - stopwatch) / 1000;
 					stopwatch = System.currentTimeMillis();
-					long totalTimeTaken = (System.currentTimeMillis() - start)/1000;
-					System.out.println(i+" rows completed in " + totalTimeTaken + " . The last 1000 took: "+timeTaken+" seconds.");
+					long totalTimeTaken = (System.currentTimeMillis() - start) / 1000;
+					System.out.println(i + " rows completed in " + totalTimeTaken + " . The last 1000 took: "
+							+ timeTaken + " seconds.");
 				}
 			}
-			
-			System.out.println("Data generation complete, total time taken: " + (System.currentTimeMillis() - start)/1000 + " seconds.");
+
+			System.out.println("Data generation complete, total time taken: "
+					+ (System.currentTimeMillis() - start) / 1000 + " seconds.");
 			start = System.currentTimeMillis();
 			System.out.println("Executing batch: ");
 			stmt.executeBatch();
-			System.out.println("batch executed in "+ (System.currentTimeMillis()- start)/1000 + " seconds. \n");
+			System.out.println("batch executed in " + (System.currentTimeMillis() - start) / 1000 + " seconds. \n");
 			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,7 +115,7 @@ public class dataPopulator {
 
 	}
 
-	private String getData(dataBaseColumnCharacteristic activeColumn, int rows) {
+	private String getData(dataBaseColumnCharacteristic activeColumn) {
 		String columnData = "";
 
 		switch (activeColumn.getColumnType()) {
@@ -119,18 +124,18 @@ public class dataPopulator {
 			columnData = "\"" + getChar(activeColumn.getLength()) + "\"";
 			break;
 		case Varchar:
-			if(activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.guid){
+			if (activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.guid) {
 				columnData = "\"" + getGuid() + "\"";
 			} else {
-				columnData = "\"" + getText(activeColumn.getLength()) + "\"";				
+				columnData = "\"" + getText(activeColumn.getLength()) + "\"";
 			}
 			break;
 		case Text:
 			columnData = "\"" + getText(activeColumn.getLength()) + "\"";
 			break;
 		case Int:
-			if(activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.relation){
-				columnData = Integer.toString(getIntRelation(rows));	
+			if (activeColumn.getExtra() == dataBaseColumnCharacteristic.Extra.relation) {
+				columnData = Integer.toString(getIntRelation());
 			} else {
 				columnData = Long.toString(getLong(intType.normalInt));
 			}
@@ -191,20 +196,20 @@ public class dataPopulator {
 	private long getLong(intType type) {
 		long leftLimit = 0L;
 		long rightLimit;
-		if(type == intType.normalInt) {
-			rightLimit = 2147483647L; 
-		} else if(type == intType.bigInt) {
+		if (type == intType.normalInt) {
+			rightLimit = 2147483647L;
+		} else if (type == intType.bigInt) {
 			rightLimit = 9223372036854775807L;
-		} else if(type == intType.mediumInt) {
-			rightLimit = 8388607L ;
+		} else if (type == intType.mediumInt) {
+			rightLimit = 8388607L;
 		} else {
 			rightLimit = 2147483647;
 		}
-		return leftLimit + (long) (Math.random() * (rightLimit-leftLimit));
+		return leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
 	}
-	
-	private int getIntRelation(int rows) {
-		return rand.nextInt(rows)+1; //No row will have id 0.	
+
+	private int getIntRelation() {
+		return rand.nextInt(rowAmount) + 1; // No row will have id 0.
 	}
 
 	private String getText(int lenght) {
@@ -220,7 +225,7 @@ public class dataPopulator {
 		}
 		return text;
 	}
-	
+
 	private String getGuid() {
 		return UUID.randomUUID().toString();
 	}

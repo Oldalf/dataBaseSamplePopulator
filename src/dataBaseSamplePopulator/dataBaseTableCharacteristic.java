@@ -5,6 +5,7 @@ import java.util.LinkedList;
 public class dataBaseTableCharacteristic {
 	private LinkedList<dataBaseColumnCharacteristic> columns = new LinkedList<dataBaseColumnCharacteristic>();
 	private String tableName;
+	public Boolean hasRelation;
 
 	public dataBaseTableCharacteristic(LinkedList<dataBaseColumnCharacteristic> columns, String tableName) {
 		this.columns = columns;
